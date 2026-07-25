@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Purchase Protection",
+    "category": "General",
+    "description": "Covers eligible purchases against accidental damage or theft for a limited period after purchase.",
+    "maxCoverage": 1500000,
+    "coverageWindowDays": 90,
+    "eligibleCards": ["Amex Centurion", "Visa Signature", "Chase Sapphire Reserve", "Mastercard World Elite", "HDFC Infinia"],
+    "requiredDocs": ["Original receipt", "Card statement", "Photos of damage (if applicable)"],
+    "iconName": "shield"
+  },
+  {
+    "title": "Extended Warranty",
+    "category": "Electronics",
+    "description": "Extends the manufacturer's warranty on eligible electronics purchases by up to 2 additional years.",
+    "maxCoverage": 1000000,
+    "coverageWindowDays": 730,
+    "eligibleCards": ["Amex Centurion", "Chase Sapphire Reserve", "HDFC Infinia"],
+    "requiredDocs": ["Original receipt", "Manufacturer warranty card", "Card statement"],
+    "iconName": "clock"
+  },
+  {
+    "title": "Return Protection",
+    "category": "Retail",
+    "description": "Reimburses eligible items that a merchant refuses to accept for return within 90 days of purchase.",
+    "maxCoverage": 300000,
+    "coverageWindowDays": 45,
+    "eligibleCards": ["Visa Signature", "Mastercard World Elite", "HDFC Infinia"],
+    "requiredDocs": ["Original receipt", "Proof merchant declined return"],
+    "iconName": "rotate-ccw"
+  },
+  {
+    "title": "Travel Delay Insurance",
+    "category": "Travel",
+    "description": "Reimburses reasonable expenses (meals, lodging) when a covered trip is delayed beyond a set threshold.",
+    "maxCoverage": 50000,
+    "coverageWindowDays": 30,
+    "eligibleCards": ["Visa Signature", "Chase Sapphire Reserve", "Amex Centurion"],
+    "requiredDocs": ["Boarding pass", "Delay confirmation from carrier", "Expense receipts"],
+    "iconName": "plane"
+  },
+  {
+    "title": "Mobile Phone Protection",
+    "category": "Electronics",
+    "description": "Covers damage or theft of a mobile phone when the monthly bill is paid with an eligible card.",
+    "maxCoverage": 100000,
+    "coverageWindowDays": 365,
+    "eligibleCards": ["HDFC Infinia", "Amex Centurion"],
+    "requiredDocs": ["Phone bill", "Repair/replacement invoice"],
+    "iconName": "smartphone"
+  },
+  {
+    "title": "Rental Car Protection",
+    "category": "Travel",
+    "description": "Provides collision damage waiver coverage when a rental car is booked entirely with an eligible card.",
+    "maxCoverage": 200000,
+    "coverageWindowDays": 60,
+    "eligibleCards": ["Chase Sapphire Reserve", "Visa Signature", "Mastercard World Elite"],
+    "requiredDocs": ["Rental agreement", "Damage report", "Card statement"],
+    "iconName": "car"
+  },
+  {
+    "title": "Baggage Loss Coverage",
+    "category": "Travel",
+    "description": "Reimburses the value of checked or carry-on baggage that is lost, damaged, or stolen during a covered trip.",
+    "maxCoverage": 150000,
+    "coverageWindowDays": 45,
+    "eligibleCards": ["Amex Centurion", "Chase Sapphire Reserve"],
+    "requiredDocs": ["Baggage claim report", "Airline correspondence", "Itemized loss list"],
+    "iconName": "briefcase"
+  },
+  {
+    "title": "Price Drop Protection",
+    "category": "Retail",
+    "description": "Refunds the price difference if an eligible item's price drops within 60 days of purchase.",
+    "maxCoverage": 50000,
+    "coverageWindowDays": 60,
+    "eligibleCards": ["Visa Signature", "HDFC Infinia", "Mastercard World Elite"],
+    "requiredDocs": ["Original receipt", "Proof of lower advertised price"],
+    "iconName": "trending-down"
+  }
+]

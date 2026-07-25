@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  cards        Card[]
+  transactions Transaction[]
+  claims       Claim[]
+  insights     Insight[]
+  uploads      Upload[]
+}
+
+model Card {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardType  String   // e.g. "Amex Centurion", matches frontend CardType
+  bank      String
+  network   String   // Visa | Mastercard | Amex
+  last4     String
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardId           String?
+  card             Card?    @relation(fields: [cardId], references: [id])
+  merchant         String
+  logo             String?
+  amount           Float
+  category         String
+  date             DateTime
+  cardUsed         String
+  cardLast4        String
+  location         String?
+  paymentMode      String?
+  detectedBenefit  String?
+  benefitValue     Float?   @default(0)
+  hasBenefit       Boolean  @default(false)
+  status           String   @default("Detected") // Detected|Activated|Claim Submitted|Under Review|Approved|Paid Out
+  claimDeadline    DateTime?
+  confidenceScore  Int?     @default(0)
+  coverageLimit    Float?   @default(0)
+  reasoningChain   String?  // JSON string of ReasoningStep[]
+  receiptUrl       String?
+  notes            String?
+  source           String   @default("manual") // manual|upload|simulated
+  createdAt        DateTime @default(now())
+
+  matchedBenefits MatchedBenefit[]
+  claims          Claim[]
+}
+
+model BenefitPolicy {
+  id                 String   @id @default(cuid())
+  title              String
+  category           String
+  description        String
+  maxCoverage        Float
+  coverageWindowDays Int
+  eligibleCards      String   // JSON array of CardType strings
+  requiredDocs       String   // JSON array of strings
+  iconName           String?
+  activeCount        Int      @default(0)
+  createdAt          DateTime @default(now())
+
+  matchedBenefits MatchedBenefit[]
+}
+
+model RuleDefinition {
+  id               String   @id @default(cuid())
+  name             String
+  active           Boolean  @default(true)
+  ifCategory       String
+  ifMinAmount      Float
+  ifCard           String   // card name or "Any"
+  ifBank           String?
+  thenBenefitTitle String
+  thenCoveragePct  Int      @default(100)
+  coverageDays     Int      @default(90)
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model MatchedBenefit {
+  id              String   @id @default(cuid())
+  transactionId   String
+  transaction     Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  benefitPolicyId String?
+  benefitPolicy   BenefitPolicy? @relation(fields: [benefitPolicyId], references: [id])
+  ruleId          String?
+  reason          String
+  confidenceScore Int
+  coverageWindowDays Int
+  coverageLimit   Float
+  createdAt       DateTime @default(now())
+}
+
+model Claim {
+  id                   String   @id @default(cuid())
+  claimNumber          String   @unique
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactionId        String
+  transaction          Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  merchant             String
+  amount               Float
+  benefitType          String
+  cardUsed             String
+  dateSubmitted        DateTime @default(now())
+  status               String   @default("Claim Submitted")
+  currentStepIndex     Int      @default(0)
+  documentsAttached    String   @default("[]") // JSON array
+  payoutAmount         Float    @default(0)
+  estimatedPayoutDate  DateTime?
+  auditLog             String   @default("[]") // JSON array of {timestamp,message,actor}
+
+  createdAt            DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Insight {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String   // urgent|opportunity|info|success
+  title         String
+  description   String
+  amount        Float?
+  actionText    String?
+  transactionId String?
+  timestamp     DateTime @default(now())
+  read          Boolean  @default(false)
+}
+
+model Upload {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filename     String
+  fileType     String   // csv|json|pdf
+  status       String   @default("processed") // processing|processed|failed
+  recordsFound Int      @default(0)
+  matchedCount Int      @default(0)
+  createdAt    DateTime @default(now())
+}

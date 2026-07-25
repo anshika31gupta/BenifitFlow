@@ -1,0 +1,6 @@
+{
+  "name": "BenefitFlow AI",
+  "description": "Smart Card Benefit Activation Engine – AI-powered platform for detecting card protection benefits and executing automated claims.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -19,6 +19,7 @@ import { AIAssistantDrawer } from './components/AIAssistantDrawer';
 import { AnalyticsView } from './components/AnalyticsView';
 import { RulesEngineAdminView } from './components/RulesEngineAdminView';
 import { SettingsView } from './components/SettingsView';
+import { AdminAnalytics } from './components/AdminAnalytics';
 import { LoginScreen } from './components/LoginScreen';
 
 import { useAuth } from './context/AuthContext';
@@ -47,7 +48,33 @@ const SIM_MERCHANTS = [
 ] as const;
 
 function AppShell() {
-  const [currentView, setCurrentView] = useState<NavView>('dashboard');
+  const [currentView, setCurrentView] = useState<NavView>(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+      return 'admin';
+    }
+    return 'dashboard';
+  });
+
+  const handleSelectView = (view: NavView) => {
+    setCurrentView(view);
+    if (view === 'admin') {
+      if (window.location.pathname !== '/admin') {
+        window.history.pushState(null, '', '/admin');
+      }
+    } else if (window.location.pathname === '/admin') {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (window.location.pathname.startsWith('/admin')) {
+        setCurrentView('admin');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [policies, setPolicies] = useState<BenefitPolicy[]>([]);
   const [claims, setClaims] = useState<ClaimRecord[]>([]);
@@ -240,7 +267,7 @@ function AppShell() {
         {/* Left Sidebar */}
         <Sidebar
           currentView={currentView}
-          onSelectView={setCurrentView}
+          onSelectView={handleSelectView}
           detectedCount={detectedCount}
           activeClaimsCount={claims.length}
         />
@@ -251,8 +278,8 @@ function AppShell() {
           {currentView === 'dashboard' && (
             <div className="space-y-8">
               <HeroSection
-                onViewProtectedPurchases={() => setCurrentView('transactions')}
-                onExploreBenefits={() => setCurrentView('library')}
+                onViewProtectedPurchases={() => handleSelectView('transactions')}
+                onExploreBenefits={() => handleSelectView('library')}
               />
 
               <UnclaimedBenefitsCard
@@ -263,7 +290,7 @@ function AppShell() {
                 onClaimNowClick={() => {
                   const firstDetected = transactions.find((t) => t.hasBenefit && t.status === 'Detected');
                   if (firstDetected) setClaimWizardTx(firstDetected);
-                  else setCurrentView('transactions');
+                  else handleSelectView('transactions');
                 }}
               />
 
@@ -280,9 +307,9 @@ function AppShell() {
                 totalSaved={totalSaved}
                 expiringHours={72}
                 onCardClick={(id) => {
-                  if (id === 'benefits-detected') setCurrentView('benefits');
-                  if (id === 'claims-submitted') setCurrentView('claims');
-                  if (id === 'money-saved') setCurrentView('analytics');
+                  if (id === 'benefits-detected') handleSelectView('benefits');
+                  if (id === 'claims-submitted') handleSelectView('claims');
+                  if (id === 'money-saved') handleSelectView('analytics');
                   if (id === 'expiring-soon') {
                     const amazonTx = transactions.find((t) => t.merchant.includes('Amazon'));
                     if (amazonTx) setClaimWizardTx(amazonTx);
@@ -335,15 +362,18 @@ function AppShell() {
           {/* VIEW 5: ANALYTICS */}
           {currentView === 'analytics' && <AnalyticsView />}
 
-          {/* VIEW 6: BENEFIT LIBRARY */}
+          {/* VIEW 6: ADMIN ANALYTICS */}
+          {currentView === 'admin' && <AdminAnalytics />}
+
+          {/* VIEW 7: BENEFIT LIBRARY */}
           {currentView === 'library' && <BenefitLibraryView policies={policies} />}
 
-          {/* VIEW 7: RULES ENGINE (ADMIN) */}
+          {/* VIEW 8: RULES ENGINE (ADMIN) */}
           {currentView === 'rules' && (
             <RulesEngineAdminView rules={rules} onToggleRule={handleToggleRule} onAddRule={handleAddRule} />
           )}
 
-          {/* VIEW 8: SETTINGS */}
+          {/* VIEW 9: SETTINGS */}
           {currentView === 'settings' && <SettingsView />}
         </main>
       </div>

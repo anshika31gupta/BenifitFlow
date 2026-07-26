@@ -8,7 +8,7 @@ dotenv.config();
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3001;
 
   app.use(express.json());
 
@@ -76,6 +76,35 @@ async function startServer() {
       return res.json({
         response: `Based on your linked card portfolio (Amex Centurion, Visa Signature, Chase Sapphire Reserve, HDFC Infinia), all electronics over ₹10,000 carry 90-day purchase protection and extended warranty backup.`
       });
+    }
+  });
+
+  // Proxy all other /api/* calls to backend at http://127.0.0.1:4000
+  app.use('/api', async (req, res) => {
+    const targetUrl = `http://127.0.0.1:4000/api${req.url}`;
+    try {
+      const headers: Record<string, string> = {};
+      if (req.headers.authorization) headers['authorization'] = req.headers.authorization as string;
+      if (req.headers['content-type']) headers['content-type'] = req.headers['content-type'] as string;
+
+      const options: RequestInit = {
+        method: req.method,
+        headers,
+      };
+
+      if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body) {
+        options.body = JSON.stringify(req.body);
+      }
+
+      const backendRes = await fetch(targetUrl, options);
+      const data = await backendRes.text();
+      res.status(backendRes.status);
+      const contentType = backendRes.headers.get('content-type');
+      if (contentType) res.setHeader('content-type', contentType);
+      return res.send(data);
+    } catch (err: any) {
+      console.error(`Proxy error to ${targetUrl}:`, err.message);
+      return res.status(502).json({ message: 'Backend service unreachable at http://127.0.0.1:4000' });
     }
   });
 

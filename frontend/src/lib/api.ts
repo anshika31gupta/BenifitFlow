@@ -6,9 +6,8 @@ import {
   ProactiveInsight,
 } from '../types';
 
-// In dev, Vite's server.ts proxies nothing extra, so we call the Express
-// backend directly. Set VITE_API_URL to override (e.g. for prod builds).
-const API_BASE = (import.meta as any).env?.VITE_API_URL || 'http://localhost:4000/api';
+// In dev, frontend server proxies /api requests to Express backend at http://127.0.0.1:4000
+const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
 
 const TOKEN_KEY = 'benefitflow_token';
 

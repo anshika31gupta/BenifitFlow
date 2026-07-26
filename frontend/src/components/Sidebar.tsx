@@ -8,7 +8,8 @@ import {
   BookOpen, 
   Sliders, 
   Settings,
-  Sparkles
+  Sparkles,
+  ShieldAlert
 } from 'lucide-react';
 
 export type NavView = 
@@ -17,6 +18,7 @@ export type NavView =
   | 'benefits' 
   | 'claims' 
   | 'analytics' 
+  | 'admin'
   | 'library' 
   | 'rules' 
   | 'settings';
@@ -52,6 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30'
     },
     { id: 'analytics' as NavView, label: 'Analytics', icon: BarChart3 },
+    { id: 'admin' as NavView, label: 'Admin Analytics', icon: ShieldAlert, isPro: true },
     { id: 'library' as NavView, label: 'Benefit Library', icon: BookOpen },
     { id: 'rules' as NavView, label: 'Rules Engine', icon: Sliders, isPro: true },
     { id: 'settings' as NavView, label: 'Settings', icon: Settings },

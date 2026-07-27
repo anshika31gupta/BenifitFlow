@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowUpRight, ShieldCheck, AlertTriangle, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
+import { ArrowUpRight, ShieldCheck, Sparkles } from 'lucide-react';
 
 interface UnclaimedBenefitsCardProps {
   unclaimedValue: number;
@@ -22,7 +23,12 @@ export const UnclaimedBenefitsCard: React.FC<UnclaimedBenefitsCardProps> = ({
   const strokeDashoffset = circumference - (circumference * activatedPct) / 100;
 
   return (
-    <div className="relative glass-panel-glow rounded-3xl p-6 sm:p-8 border border-blue-500/20 overflow-hidden shadow-[0_15px_35px_rgba(37,99,235,0.15)]">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="relative glass-panel-glow rounded-3xl p-6 sm:p-8 border border-blue-500/20 overflow-hidden shadow-[0_15px_35px_rgba(37,99,235,0.15)]"
+    >
       {/* Glow background circles */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-blue-600/10 via-emerald-600/10 to-transparent rounded-full blur-2xl pointer-events-none" />
 
@@ -36,7 +42,7 @@ export const UnclaimedBenefitsCard: React.FC<UnclaimedBenefitsCardProps> = ({
             </span>
           </div>
 
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-baseline gap-3 flex-wrap">
             <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight gradient-text-emerald font-mono">
               ₹{unclaimedValue.toLocaleString('en-IN')}
             </h2>
@@ -51,13 +57,15 @@ export const UnclaimedBenefitsCard: React.FC<UnclaimedBenefitsCardProps> = ({
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-4">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onClaimNowClick}
-              className="bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold px-6 py-3 rounded-2xl text-xs sm:text-sm shadow-[0_10px_20px_-5px_rgba(16,185,129,0.4)] transition-all transform active:scale-95 flex items-center gap-2"
+              className="bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold px-6 py-3 rounded-2xl text-xs sm:text-sm shadow-[0_10px_20px_-5px_rgba(16,185,129,0.4)] transition-all flex items-center gap-2 cursor-pointer"
             >
               <span>Auto-Activate Claims</span>
               <ArrowUpRight className="w-4 h-4" />
-            </button>
+            </motion.button>
             <span className="text-[11px] text-slate-400 font-mono">
               Instant payout to linked bank account
             </span>
@@ -116,6 +124,6 @@ export const UnclaimedBenefitsCard: React.FC<UnclaimedBenefitsCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

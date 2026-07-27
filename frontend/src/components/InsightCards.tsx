@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { ShieldCheck, Send, PiggyBank, Clock, TrendingUp } from 'lucide-react';
 
 interface InsightCardsProps {
@@ -65,11 +66,16 @@ export const InsightCards: React.FC<InsightCardsProps> = ({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      {cards.map((card) => {
+      {cards.map((card, index) => {
         const Icon = card.icon;
         return (
-          <div
+          <motion.div
             key={card.id}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.08 }}
+            whileHover={{ y: -4, scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => onCardClick && onCardClick(card.id)}
             className={`glass-panel-interactive rounded-2xl p-5 border ${card.border} ${card.glow} relative overflow-hidden group cursor-pointer space-y-3`}
           >
@@ -96,7 +102,7 @@ export const InsightCards: React.FC<InsightCardsProps> = ({
 
             {/* Subtle bottom gradient glow line */}
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
+          </motion.div>
         );
       })}
     </div>

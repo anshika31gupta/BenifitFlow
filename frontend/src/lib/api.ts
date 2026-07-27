@@ -6,8 +6,13 @@ import {
   ProactiveInsight,
 } from '../types';
 
-// In dev, frontend server proxies /api requests to Express backend at http://127.0.0.1:4000
-const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
+// In development the bundled frontend server proxies /api requests to the local backend.
+// In production, Vercel can be pointed at Render via the VITE_API_URL environment variable.
+const API_BASE = (() => {
+  const rawBase = (import.meta as any).env?.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:4000/api' : '/api');
+  const normalized = rawBase.replace(/\/$/, '');
+  return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+})();
 
 const TOKEN_KEY = 'benefitflow_token';
 

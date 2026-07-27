@@ -22,14 +22,25 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: corsOrigin === '*' ? true : corsOrigin.split(','),
+    origin: corsOrigin === '*' ? true : corsOrigin.split(',').map((item) => item.trim()).filter(Boolean),
     credentials: true,
   })
 );
 app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan(nodeEnv === 'production' ? 'combined' : 'dev'));
 
-app.get('/health', (req, res) => res.json({ success: true, status: 'ok', service: 'benefitflow-backend' }));
+app.get('/', (_req, res) => {
+  res.json({ status: 'running', service: 'BenefitFlow Backend' });
+});
+
+app.get('/health', (_req, res) => {
+  res.json({ success: true });
+});
+
+app.get('/api/health', (_req, res) => {
+  res.json({ success: true });
+});
 
 // Auth
 app.use('/api/auth', authRoutes);

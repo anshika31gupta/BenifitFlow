@@ -9,6 +9,7 @@ dotenv.config();
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3001;
+  const backendBase = (process.env.BACKEND_URL || process.env.VITE_API_URL || 'http://127.0.0.1:4000').replace(/\/$/, '');
 
   app.use(express.json());
 
@@ -79,9 +80,9 @@ async function startServer() {
     }
   });
 
-  // Proxy all other /api/* calls to backend at http://127.0.0.1:4000
+  // Proxy all other /api/* calls to the configured backend endpoint.
   app.use('/api', async (req, res) => {
-    const targetUrl = `http://127.0.0.1:4000/api${req.url}`;
+    const targetUrl = backendBase.endsWith('/api') ? `${backendBase}${req.url}` : `${backendBase}/api${req.url}`;
     try {
       const headers: Record<string, string> = {};
       if (req.headers.authorization) headers['authorization'] = req.headers.authorization as string;
@@ -104,7 +105,7 @@ async function startServer() {
       return res.send(data);
     } catch (err: any) {
       console.error(`Proxy error to ${targetUrl}:`, err.message);
-      return res.status(502).json({ message: 'Backend service unreachable at http://127.0.0.1:4000' });
+      return res.status(502).json({ message: `Backend service unreachable at ${backendBase}` });
     }
   });
 

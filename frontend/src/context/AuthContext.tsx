@@ -32,21 +32,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(profile);
       } catch {
         clearToken();
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
     };
-    bootstrap();
+    void bootstrap();
   }, []);
 
   const login = async (email: string, password: string) => {
-    const u = await apiLogin(email, password);
-    setUser(u);
+    const userData = await apiLogin(email, password);
+    setUser(userData as AuthUser);
   };
 
   const signup = async (name: string, email: string, password: string) => {
-    const u = await apiSignup(name, email, password);
-    setUser(u);
+    const userData = await apiSignup(name, email, password);
+    setUser(userData as AuthUser);
   };
 
   const logout = () => {

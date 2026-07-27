@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { 
   LayoutDashboard, 
   Receipt, 
@@ -64,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside className="w-16 md:w-64 flex-shrink-0 bg-[#09090b]/90 border-r border-white/10 min-h-[calc(100vh-4rem)] p-3 md:p-4 flex flex-col justify-between select-none">
       <div className="space-y-6">
         <div className="px-2 hidden md:block">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-slate-500">NAVIGATION</p>
+          <p className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-semibold">NAVIGATION</p>
         </div>
 
         <nav className="space-y-1.5">
@@ -72,8 +73,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             const Icon = item.icon;
             const isActive = currentView === item.id;
             return (
-              <button
+              <motion.button
                 key={item.id}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onSelectView(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-xs transition-all duration-200 group relative ${
                   isActive
@@ -97,17 +100,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     ADMIN
                   </span>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </nav>
       </div>
 
       {/* Bottom Floating Card inside Sidebar */}
-      <div className="hidden md:block glass-panel p-4 rounded-2xl border border-white/10 relative overflow-hidden space-y-3">
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        className="hidden md:block glass-panel p-4 rounded-2xl border border-white/10 relative overflow-hidden space-y-3 shadow-xl"
+      >
         <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-600/20 rounded-full blur-xl pointer-events-none" />
         <div className="flex items-center gap-2 text-blue-400">
-          <Sparkles className="w-4 h-4 animate-spin-slow" />
+          <Sparkles className="w-4 h-4 animate-spin-slow text-blue-400" />
           <span className="text-xs font-bold">Auto-Claim Engine</span>
         </div>
         <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -115,12 +121,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </p>
         <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-2 border-t border-white/10">
           <span>Engine Status</span>
-          <span className="text-emerald-400 font-semibold flex items-center gap-1">
+          <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Active
           </span>
         </div>
-      </div>
+      </motion.div>
     </aside>
   );
 };
